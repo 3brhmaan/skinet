@@ -1,4 +1,5 @@
 using Core.Interfaces;
+using Core.Specification;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,8 @@ builder.Services.AddDbContext<StoredContext>(opts =>
     opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped(typeof(IGenericRepository<>) , typeof(GenericRepository<>));
+builder.Services.AddScoped(typeof(ISpecification<>) , typeof(BaseSpecifications<>));
 
 
 var app = builder.Build();
