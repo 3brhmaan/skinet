@@ -1,3 +1,4 @@
+using API.Middleware;
 using Core.Interfaces;
 using Core.Specification;
 using Infrastructure.Data;
@@ -14,12 +15,21 @@ builder.Services.AddDbContext<StoredContext>(opts =>
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>) , typeof(GenericRepository<>));
 builder.Services.AddScoped(typeof(ISpecification<>) , typeof(BaseSpecifications<>));
+builder.Services.AddCors();
 
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseCors(opts =>
+{
+    opts.AllowAnyHeader();
+    opts.AllowAnyMethod();
+    opts.WithOrigins("http://localhost:4200", "https://localhost:4200");
+});
 
 app.MapControllers();
+
 
 try
 {
