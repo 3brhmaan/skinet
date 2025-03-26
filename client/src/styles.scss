@@ -22,3 +22,11 @@ $customTheme: mat.define-theme();
   @apply mx-auto max-w-screen-2xl;
   max-width: 1480px;
 }
+
+.text-primary {
+  color: #7d00fe;
+}
+
+button.match-input-height {
+  height: var(--mat-form-field-container-height) !important;
+}
