@@ -5,6 +5,8 @@ import { ProductDetailsComponent } from './features/shop/product-details/product
 import { TestErrorComponent } from './features/test-error/test-error.component';
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 import { ServerErrorComponent } from './shared/components/server-error/server-error.component';
+import { LoginComponent } from './features/account/login/login.component';
+import { RegisterComponent } from './features/account/register/register.component';
 
 export const routes: Routes = [
   {
@@ -18,6 +20,14 @@ export const routes: Routes = [
   {
     path: 'shop/:id',
     component: ProductDetailsComponent,
+  },
+  {
+    path: 'account/login',
+    component: LoginComponent,
+  },
+  {
+    path: 'account/register',
+    component: RegisterComponent,
   },
   {
     path: 'test-error',
