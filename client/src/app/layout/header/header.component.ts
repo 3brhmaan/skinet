@@ -8,6 +8,7 @@ import { MatProgressBar } from '@angular/material/progress-bar';
 import { AccountService } from '../../core/services/account.service';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDivider } from '@angular/material/divider';
+import { CartService } from '../../core/services/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -29,6 +30,7 @@ import { MatDivider } from '@angular/material/divider';
 export class HeaderComponent {
   busyService = inject(BusyService);
   accountService = inject(AccountService);
+  cartService = inject(CartService);
   private router = inject(Router);
 
   logout() {
