@@ -66,7 +66,7 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
         });
     }
 
-    [HttpGet]
+    [HttpGet("auth-status")]
     public IActionResult GetAuthState()
     {
         return Ok(new
