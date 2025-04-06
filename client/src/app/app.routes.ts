@@ -10,6 +10,7 @@ import { RegisterComponent } from './features/account/register/register.componen
 import { CartComponent } from './features/cart/cart.component';
 import { CheckoutComponent } from './features/checkout/checkout.component';
 import { authGuard } from './core/guards/auth.guard';
+import { emptyCartGuard } from './core/guards/empty-cart.guard';
 
 export const routes: Routes = [
   {
@@ -31,7 +32,7 @@ export const routes: Routes = [
   {
     path: 'checkout',
     component: CheckoutComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard, emptyCartGuard],
   },
   {
     path: 'account/login',
