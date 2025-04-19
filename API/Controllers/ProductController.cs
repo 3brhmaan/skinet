@@ -2,6 +2,7 @@
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specification;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -32,6 +33,7 @@ public class ProductsController(IGenericRepository<Product> genericRepository) :
         return Ok(product);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> CreateProduct(Product product)
     {
@@ -45,6 +47,7 @@ public class ProductsController(IGenericRepository<Product> genericRepository) :
         return BadRequest("Problem Creating Product");
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateProduct(int id , Product product)
     {
@@ -76,6 +79,7 @@ public class ProductsController(IGenericRepository<Product> genericRepository) :
         return Ok(await genericRepository.ListAsync(spec));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
