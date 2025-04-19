@@ -7,10 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-public class ProductsController(IGenericRepository<Product> genericRepository) : BaseApiController
+public class ProductsController(IUnitOfWork unitOfWork) : BaseApiController
 {
-    private readonly IGenericRepository<Product> genericRepository = genericRepository;
-
     [HttpGet]
     public async Task<IActionResult> GetProducts(
         [FromQuery]ProductSpecParams specParams)
@@ -18,14 +16,14 @@ public class ProductsController(IGenericRepository<Product> genericRepository) :
         var spec = new ProductSpecification(specParams);
 
         return await CreatePageResult(
-            genericRepository, spec, specParams.PageIndex, specParams.PageSize 
+            unitOfWork.Repository<Product>(), spec, specParams.PageIndex, specParams.PageSize 
         );
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetProduct(int id)
     {
-        var product = await genericRepository.GetByIdAsync(id);
+        var product = await unitOfWork.Repository<Product>().GetByIdAsync(id);
 
         if (product is null)
             return NotFound();
@@ -33,13 +31,13 @@ public class ProductsController(IGenericRepository<Product> genericRepository) :
         return Ok(product);
     }
 
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> CreateProduct(Product product)
     {
-        genericRepository.Add(product);
+        unitOfWork.Repository<Product>().Add(product);
 
-        if (await genericRepository.SaveAllAsync())
+        if (await unitOfWork.Complete())
         {
             return CreatedAtAction("GetProduct" , new { id = product.Id } , product);
         }
@@ -47,7 +45,7 @@ public class ProductsController(IGenericRepository<Product> genericRepository) :
         return BadRequest("Problem Creating Product");
     }
 
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateProduct(int id , Product product)
     {
@@ -56,8 +54,8 @@ public class ProductsController(IGenericRepository<Product> genericRepository) :
             return BadRequest("Can't Update This Product");
         }
 
-        genericRepository.Update(product);
-        if (await genericRepository.SaveAllAsync())
+        unitOfWork.Repository<Product>().Update(product);
+        if (await unitOfWork.Complete())
         {
             return NoContent();
         }
@@ -69,26 +67,26 @@ public class ProductsController(IGenericRepository<Product> genericRepository) :
     public async Task<IActionResult> GetBrands()
     {
         var spec = new BrandListSpecification();
-        return Ok(await genericRepository.ListAsync(spec));
+        return Ok(await unitOfWork.Repository<Product>().ListAsync(spec));
     }
 
     [HttpGet("types")]
     public async Task<IActionResult> GetTypes()
     {
         var spec = new TypeListSpecification();
-        return Ok(await genericRepository.ListAsync(spec));
+        return Ok(await unitOfWork.Repository<Product>().ListAsync(spec));
     }
 
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
-        var product = await genericRepository.GetByIdAsync(id);
+        var product = await unitOfWork.Repository<Product>().GetByIdAsync(id);
         if (product is null)
             return NotFound();
 
-        genericRepository.Remove(product);
-        if (await genericRepository.SaveAllAsync())
+        unitOfWork.Repository<Product>().Remove(product);
+        if (await unitOfWork.Complete())
         {
             return NoContent();
         }
@@ -98,6 +96,6 @@ public class ProductsController(IGenericRepository<Product> genericRepository) :
 
     private bool ProductExist(int id)
     {
-        return genericRepository.Exists(id);
+        return unitOfWork.Repository<Product>().Exists(id);
     }
 }

@@ -9,7 +9,7 @@ namespace API.Controllers;
 [ApiController]
 public class PaymentsController(
     IPaymentService paymentService ,
-    IGenericRepository<DeliveryMethod> dmRepository
+    IUnitOfWork unitOfWork
 )
     : ControllerBase
 {
@@ -30,7 +30,9 @@ public class PaymentsController(
     [HttpGet("delivery-methods")]
     public async Task<IActionResult> GetDeliveryMethod()
     {
-        return Ok(await dmRepository.GetAllAsync());
+        return Ok(
+            await unitOfWork.Repository<DeliveryMethod>().GetAllAsync()
+        );
     }
 
 }
