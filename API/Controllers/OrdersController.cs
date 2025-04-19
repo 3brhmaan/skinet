@@ -83,7 +83,9 @@ public class OrdersController(
         var orders = await unitOfWork.Repository<Order>()
             .ListAsync(spec);
 
-        return Ok(orders);
+        var ordersToReturn = orders.Select(x => x.ToDto()).ToList();    
+
+        return Ok(ordersToReturn);
     }
 
     [HttpGet("{id:int}")]
@@ -97,6 +99,6 @@ public class OrdersController(
         if(order is null)
             return NotFound();
 
-        return Ok(order);
+        return Ok(order.ToDto());
     }
 }
