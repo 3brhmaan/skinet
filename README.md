@@ -74,18 +74,18 @@
     git clone git@github.com:3brhmaan/skinet.git
   ```
 2. Run the application:
-   ```bash
-     dotnet run
-   ```
+  ```bash
+    dotnet run
+  ```
 
 ### Frontend Setup
 1. Navigate to the frontend folder: `cd client`
 2. Install dependencies: `npm install`
 3. Update environment files with Stripe configurations.
 4. Start the development server:
-   ```bash
-     ng serve -o
-   ```
+  ```
+    ng serve -o
+  ```
 
 ---
 
