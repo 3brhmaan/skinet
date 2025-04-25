@@ -1,30 +1,16 @@
 ﻿namespace Core.Specification;
-public class ProductSpecParams
+public class ProductSpecParams : PaginParams
 {
-    private const int MaxPageSize = 50;
-    public int PageIndex { get; set; } = 1;
-    private int _pageSize = 6;
-
-    public int PageSize
-    {
-        get => _pageSize;
-        set => _pageSize = (value > MaxPageSize) ? MaxPageSize : value;
-    }
-
     private List<string> _brands = [];
     private List<string> _types = [];
 
     public string? Sort { get; set; }
-
     private string? _search;
-
     public string Search
     {
         get => _search ?? "";
         set => _search = value;
     }
-
-
     public List<string> Brands
     {
         get => _brands;
@@ -35,7 +21,6 @@ public class ProductSpecParams
                 .ToList();
         }
     }
-
     public List<string> Types
     {
         get => _types;
