@@ -75,7 +75,7 @@
   ```
 2. Run the application:
    ```bash
-   dotnet run
+     dotnet run
    ```
 
 ### Frontend Setup
@@ -84,7 +84,7 @@
 3. Update environment files with Stripe configurations.
 4. Start the development server:
    ```bash
-   ng serve -o
+     ng serve -o
    ```
 
 ---
