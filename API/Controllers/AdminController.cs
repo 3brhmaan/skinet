@@ -8,7 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [Authorize(Roles = "Admin")]
-public class AdminController(IUnitOfWork unitOfWork) : BaseApiController
+public class AdminController(
+    IUnitOfWork unitOfWork ,
+    IPaymentService paymentService
+)
+    : BaseApiController
 {
     [HttpGet("orders")]
     public async Task<IActionResult> GetOrders([FromQuery] OrderSpecParams specParams)
@@ -32,9 +36,37 @@ public class AdminController(IUnitOfWork unitOfWork) : BaseApiController
         var order = await unitOfWork.Repository<Order>()
             .GetEntityWithSpec(spec);
 
-        if(order == null) 
+        if (order == null)
             return BadRequest("No order with is.");
 
         return Ok(order.ToDto());
+    }
+
+    [HttpPost("orders/refund/{id:int}")]
+    public async Task<IActionResult> RefundOrder(int id)
+    {
+        var spec = new OrderSpecification(id);
+
+        var order = await unitOfWork.Repository<Order>()
+            .GetEntityWithSpec(spec);
+
+        if (order == null)
+            return BadRequest("No order with that id.");
+
+        if (order.Status == OrderStatus.Pending)
+            return BadRequest("Payment not recived for this order");
+
+        var result = await paymentService.RefundPayment(order.PaymentIntentId);
+
+        if (result == "succeeded")
+        {
+            order.Status = OrderStatus.Refunded;
+
+            await unitOfWork.Complete();
+
+            return Ok(order.ToDto());
+        }
+
+        return BadRequest("Problem Refunding Order");
     }
 }

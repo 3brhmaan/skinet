@@ -63,7 +63,7 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
             user.LastName ,
             user.Email ,
             Address = user.Address?.ToDto() ,
-            Role = User.FindFirstValue(ClaimTypes.Role)
+            Roles = User.FindFirstValue(ClaimTypes.Role)
         });
     }
 
