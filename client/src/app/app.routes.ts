@@ -12,6 +12,7 @@ import { CheckoutComponent } from './features/checkout/checkout.component';
 import { authGuard } from './core/guards/auth.guard';
 import { emptyCartGuard } from './core/guards/empty-cart.guard';
 import { CheckoutSuccessComponent } from './features/checkout/checkout-success/checkout-success.component';
+import { AdminComponent } from './features/admin/admin.component';
 
 export const routes: Routes = [
   {
@@ -59,6 +60,11 @@ export const routes: Routes = [
   {
     path: 'server-error',
     component: ServerErrorComponent,
+  },
+  {
+    path: 'admin',
+    component: AdminComponent,
+    canActivate: [authGuard],
   },
   {
     path: '**',
