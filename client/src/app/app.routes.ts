@@ -5,14 +5,8 @@ import { ProductDetailsComponent } from './features/shop/product-details/product
 import { TestErrorComponent } from './features/test-error/test-error.component';
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 import { ServerErrorComponent } from './shared/components/server-error/server-error.component';
-import { LoginComponent } from './features/account/login/login.component';
-import { RegisterComponent } from './features/account/register/register.component';
 import { CartComponent } from './features/cart/cart.component';
-import { CheckoutComponent } from './features/checkout/checkout.component';
 import { authGuard } from './core/guards/auth.guard';
-import { emptyCartGuard } from './core/guards/empty-cart.guard';
-import { CheckoutSuccessComponent } from './features/checkout/checkout-success/checkout-success.component';
-import { AdminComponent } from './features/admin/admin.component';
 import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
@@ -34,21 +28,13 @@ export const routes: Routes = [
   },
   {
     path: 'checkout',
-    component: CheckoutComponent,
-    canActivate: [authGuard, emptyCartGuard],
+    loadChildren: () =>
+      import('./features/checkout/routes').then((r) => r.checkoutRoutes),
   },
   {
-    path: 'checkout/success',
-    component: CheckoutSuccessComponent,
-    canActivate: [authGuard],
-  },
-  {
-    path: 'account/login',
-    component: LoginComponent,
-  },
-  {
-    path: 'account/register',
-    component: RegisterComponent,
+    path: 'account',
+    loadChildren: () =>
+      import('./features/account/routes').then((r) => r.accountRoutes),
   },
   {
     path: 'test-error',
@@ -64,7 +50,8 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    component: AdminComponent,
+    loadComponent: () =>
+      import('./features/admin/admin.component').then((c) => c.AdminComponent),
     canActivate: [authGuard, adminGuard],
   },
   {

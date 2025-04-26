@@ -38,7 +38,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CheckoutDeliveryComponent,
     CheckoutReviewComponent,
     CurrencyPipe,
-    JsonPipe,
     MatProgressSpinnerModule,
   ],
   templateUrl: './checkout.component.html',
