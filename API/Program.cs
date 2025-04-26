@@ -16,28 +16,31 @@ builder.Services.AddDbContext<StoredContext>(opts =>
 {
     opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductRepository , ProductRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>) , typeof(GenericRepository<>));
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUnitOfWork , UnitOfWork>();
 builder.Services.AddScoped(typeof(ISpecification<>) , typeof(BaseSpecifications<>));
 builder.Services.AddCors();
+
 builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
 {
-    var connString = builder.Configuration.GetConnectionString("Redis") 
+    var connString = builder.Configuration.GetConnectionString("Redis")
             ?? throw new Exception("Can't Get Redis Connection String");
 
-    var configuation = ConfigurationOptions.Parse(connString, true);
+    var configuation = ConfigurationOptions.Parse(connString , true);
 
     return ConnectionMultiplexer.Connect(configuation);
 });
-builder.Services.AddSingleton<ICartService, CartService>();
+builder.Services.AddSingleton<ICartService , CartService>();
+builder.Services.AddSingleton<IResponseCacheService , ResponseCacheService>();
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<StoredContext>();
 
-builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IPaymentService , PaymentService>();
 
 
 var app = builder.Build();
@@ -47,7 +50,7 @@ app.UseCors(opts =>
 {
     opts.AllowAnyHeader();
     opts.AllowAnyMethod();
-    opts.WithOrigins("http://localhost:4200", "https://localhost:4200");
+    opts.WithOrigins("http://localhost:4200" , "https://localhost:4200");
     opts.AllowCredentials();
 });
 
@@ -61,11 +64,11 @@ try
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<StoredContext>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
-   
+
     await context.Database.MigrateAsync();
-    await StoredContextSeed.SeedAsync(context, userManager);
+    await StoredContextSeed.SeedAsync(context , userManager);
 }
-catch(Exception ex)
+catch (Exception ex)
 {
     Console.WriteLine(ex);
 }

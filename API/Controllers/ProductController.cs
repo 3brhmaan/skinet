@@ -9,18 +9,18 @@ namespace API.Controllers;
 
 public class ProductsController(IUnitOfWork unitOfWork) : BaseApiController
 {
-    [HttpGet]
+    [HttpGet, Cache(600)]
     public async Task<IActionResult> GetProducts(
-        [FromQuery]ProductSpecParams specParams)
+        [FromQuery] ProductSpecParams specParams)
     {
         var spec = new ProductSpecification(specParams);
 
         return await CreatePageResult(
-            unitOfWork.Repository<Product>(), spec, specParams.PageIndex, specParams.PageSize 
+            unitOfWork.Repository<Product>() , spec , specParams.PageIndex , specParams.PageSize
         );
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}"), Cache(600)]
     public async Task<IActionResult> GetProduct(int id)
     {
         var product = await unitOfWork.Repository<Product>().GetByIdAsync(id);
@@ -31,7 +31,8 @@ public class ProductsController(IUnitOfWork unitOfWork) : BaseApiController
         return Ok(product);
     }
 
-    //[Authorize(Roles = "Admin")]
+    [InvalidateCache("api/products|")]
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> CreateProduct(Product product)
     {
@@ -45,7 +46,8 @@ public class ProductsController(IUnitOfWork unitOfWork) : BaseApiController
         return BadRequest("Problem Creating Product");
     }
 
-    //[Authorize(Roles = "Admin")]
+    [InvalidateCache("api/products|")]
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateProduct(int id , Product product)
     {
@@ -63,21 +65,22 @@ public class ProductsController(IUnitOfWork unitOfWork) : BaseApiController
         return BadRequest("Problem updating the product");
     }
 
-    [HttpGet("brands")]
+    [HttpGet("brands"), Cache(10000)]
     public async Task<IActionResult> GetBrands()
     {
         var spec = new BrandListSpecification();
         return Ok(await unitOfWork.Repository<Product>().ListAsync(spec));
     }
 
-    [HttpGet("types")]
+    [HttpGet("types"), Cache(10000)]
     public async Task<IActionResult> GetTypes()
     {
         var spec = new TypeListSpecification();
         return Ok(await unitOfWork.Repository<Product>().ListAsync(spec));
     }
 
-    //[Authorize(Roles = "Admin")]
+    [InvalidateCache("api/products|")]
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
